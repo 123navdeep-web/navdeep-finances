@@ -304,7 +304,7 @@ function App(){
   const allMonths=useMemo(()=>{const s=new Set([...expenses.map(e=>e.date.slice(0,7)),...incomes.map(i=>i.date.slice(0,7)),...savings.map(s=>s.date.slice(0,7))]);if(!s.has(mkMonth()))s.add(mkMonth());return[...s].sort().reverse();},[expenses,incomes,savings]);
   const iByM=useMemo(()=>allMonths.reduce((acc,m)=>{acc[m]=incomes.filter(i=>i.date.startsWith(m)).reduce((a,i)=>a+i.amount,0);return acc;},{}),[incomes,allMonths]);
   const spdByM=useMemo(()=>allMonths.reduce((acc,m)=>{acc[m]=expenses.filter(e=>e.date.startsWith(m)).reduce((a,e)=>a+e.amount,0);return acc;},{}),[expenses,allMonths]);
-  const savByM=useMemo(()=>allMonths.reduce((acc,m)=>{acc[m]=savings.filter(s=>s.date.startsWith(m)).reduce((a,s)=>a+s.amount,0);return acc;},{}),[savings,allMonths]);
+  const savByM=useMemo(()=>allMonths.reduce((acc,m)=>{const inc=incomes.filter(i=>i.date.startsWith(m)).reduce((a,i)=>a+i.amount,0);const spd=expenses.filter(e=>e.date.startsWith(m)).reduce((a,e)=>a+e.amount,0);acc[m]=Math.max(0,inc-spd);return acc;},{}),[incomes,expenses,allMonths]);
   const donutCats=CATS.map(c=>({label:c,v:byCat[c]||0,col:COLOR[c]}));
   const bubCats=CATS.map(c=>({label:c,v:byCat[c]||0}));
 
